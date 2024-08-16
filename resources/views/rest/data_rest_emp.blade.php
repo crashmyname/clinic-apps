@@ -158,8 +158,8 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form class="form form-horizontal" action="{{route('import-mcu')}}" method="post"
-                                                            enctype="multipart/form-data">
+                                                        <form class="form form-horizontal" action="{{route('import-rest')}}" method="post"
+                                                            enctype="multipart/form-data" id="importRest">
                                                             @csrf
                                                             <div class="form-body">
                                                                 <div class="row">
@@ -175,7 +175,7 @@
                                                                         <button type="submit"
                                                                             class="btn btn-primary me-1 mb-1"
                                                                             name="excel"
-                                                                            onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                            id="submitImport">Submit</button>
                                                                         <button type="reset"
                                                                             class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                                                     </div>
@@ -201,7 +201,7 @@
                 <!-- </div> -->
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="datatable" width="100%" cellspacing="0">
+                        <table class="table table-bordered" id="datatables" width="100%" cellspacing="0">
                             <thead>
                                 <tr align="center">
                                     <th>No</th>
@@ -228,7 +228,7 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>
@@ -236,27 +236,29 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#datatables').DataTable({
+        var datatable = $('#datatables').DataTable({
             processing: true,
-            serverside: true,
-            ajax: '{{ route('pemakaian-obat') }}',
+            serverSide: true,
+            responsive: true,
+            select: true,
+            ajax: '{{ route('istirahat') }}',
             columns:[
                 {
-                    data: 'id_pemakaian',
-                    name: 'id_pemakaian',
+                    data: 'id_rest',
+                    name: 'id_rest',
                     render:function(data, type, row, meta){
                         return meta.row + meta.settings._iDisplayStart + 1;
                     },
                 },
                 {data: 'nik', name: 'nik'},
                 {data: 'nama', name: 'nama'},
-                {data: 'kode_section', name: 'section'},
                 {data: 'keluhan', name: 'keluhan'},
-                {data: 'nama_obat', name: 'nama_obat'},
-                {data: 'jumlah', name: 'jumlah'},
-                {data: 'tgl_pemakaian', name: 'tgl_pemakaian'},
+                {data: 'penanganan', name: 'penanganan'},
+                {data: 'tgl_rest', name: 'tgl_rest'},
+                {data: 'waktu_rest', name: 'waktu_rest'},
+                {data: 'waktu_selesai', name: 'waktu_selesai'},
                 {
-                    data: 'id_pemakaian',
+                    data: 'id_rest',
                     name: 'action',
                     // orderable: false,
                     render: function(data, type, row) {
@@ -275,46 +277,107 @@
                     extend: 'copy',
                     text:'COPY',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'pdf',
                     text:'PDF',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'print',
                     text:'CETAK',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'csv',
                     text:'CSV',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'excel',
                     text:'EXCEL',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'colvis',
                     text:'COLUMN VISIBLE',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 }
             ]
         });
+        $('#submitImport').on('click', function (e) {
+            e.preventDefault();
+            var formImport = new FormData($('#importRest')[0]);
+            $.ajax({
+                type: 'POST',
+                data: formImport,
+                url: '{{route('import-rest')}}',
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                dataType: 'json',
+                success: function (response) {
+                    if(response.status === 200){
+                        Swal.fire({
+                            title: 'Success',
+                            icon: 'success',
+                            text: 'Import Successfully',
+                            showConfirmButton: false,
+                            timer:1000,
+                        });
+                        reloadData();
+                    } else {
+                        Swal.fire({
+                            title: 'error',
+                            icon: 'error',
+                            text: 'Failed Import'
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error(error)
+                },
+            });
+        });
+        function reloadData() {
+            datatable.ajax.reload();
+        }
     });
      $("#emp").change(function(){
             // variabel dari nilai combo box kendaraan

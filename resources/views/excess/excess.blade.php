@@ -1,4 +1,4 @@
-@extends('nav/header')
+@extends('nav.header')
 @section('container')
 
 <div id="main">
@@ -286,7 +286,7 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form class="form form-horizontal" action="{{route('import-excess')}}" method="post"
+                                                        <form class="form form-horizontal" id="FormExcel" action="{{route('import-excess')}}" method="POST"
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             <div class="form-body">
@@ -295,15 +295,15 @@
                                                                         <label>FILE EXCEL</label>
                                                                     </div>
                                                                     <div class="col-md-8 form-group">
-                                                                    <input type="file" id="first-name"
+                                                                    <input type="file" id="file_excel"
                                                                             class="form-control" name="file_excel"
-                                                                            placeholder="Masukan Data Alat">
+                                                                            >
                                                                     </div>
                                                                     <div class="col-sm-12 d-flex justify-content-end">
                                                                         <button type="submit"
                                                                             class="btn btn-primary me-1 mb-1"
-                                                                            name="excel"
-                                                                            onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                            name="excel" id="importExcess"
+                                                                            >Submit</button>
                                                                         <button type="reset"
                                                                             class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                                                     </div>
@@ -342,7 +342,7 @@
                                     <th width="100px">ACTION</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {{-- <tbody>
 
                                 <tr align="center">
                                 <td>{{++$no}}</td>
@@ -357,7 +357,7 @@
                                             name="hapus" title="Hapus Data" onclick="return confirm('Apakah yakin mau menghapus data?')"><i class="bi bi-trash"></i></a>
                                         </td>
                                 </tr>
-                            </tbody>
+                            </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -369,98 +369,219 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>
             </footer>
 </div>
 <script>
-     $("#emp").change(function(){
-            // variabel dari nilai combo box kendaraan
-            var emp = $("#emp").val();
-
-            // Menggunakan ajax untuk mengirim dan dan menerima data dari server
-            $.ajax({
-                type: "POST",
-                dataType: "html",
-                url: "ambil_data.php",
-                data: "emp="+emp,
-                success: function(data){
-                   $("#nama").html(data);
-                }
+     $("#emp").change(function() {
+                var emp = $("#emp").val();
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Menggunakan ajax untuk mengirim dan dan menerima data dari server
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ route('DataApi') }}",
+                    data: {
+                        _token: csrfToken,
+                        emp: emp,
+                    },
+                    success: function(data) {
+                        var options = '';
+                        data.forEach(function(m) {
+                            options += "<option value='" + m.nama + "'>" + m.nama + "</option>";
+                        });
+                        $("#nama").html(options);
+                    }
+                });
             });
-        });
 
-        $("#emp").change(function(){
-            // variabel dari nilai combo box merk
-            var sect = $("#emp").val();
-
-            // Menggunakan ajax untuk mengirim dan dan menerima data dari server
-            $.ajax({
-                type: "POST",
-                dataType: "html",
-                url: "ambil_sect.php",
-                data: "emp="+sect,
-                success: function(data){
-                    $("#section").html(data);
-                }
+            $("#emp").change(function() {
+                var sect = $("#emp").val();
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Menggunakan ajax untuk mengirim dan dan menerima data dari server
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ route('DataApiSection') }}",
+                    data: {
+                        _token: csrfToken,
+                        emp: sect,
+                    },
+                    success: function(data) {
+                        var options = '';
+                        data.forEach(function(m) {
+                            options += "<option value='" + m.kode_section + "'>" + m.kode_section +
+                                "</option>";
+                        });
+                        $("#section").html(options);
+                    }
+                });
             });
-        });
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#datatable').DataTable({
-            // processing: true,
-            // serverSide: true,
+        var datatable = $('#datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            select: true,
             dom: 'Bfrtip',
-            "pageLength": 10,
+            ajax: '{{route('pemakaian-lebih')}}',
+            columns: [
+                {
+                    data:'id_offer',
+                    name:'id_offer',
+                    render:function(row,data,type,meta){
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data:'nik',
+                    name:'nik'
+                },
+                {
+                    data:'nama',
+                    name:'nama'
+                },
+                {
+                    data:'kode_section',
+                    name:'kode_section'
+                },
+                {
+                    data:'keluhan',
+                    name:'keluhan'
+                },
+                {
+                    data:'nama_obat',
+                    name:'obat.nama_obat',
+                    searchable: true
+                },
+                {
+                    data:'jumlah',
+                    name:'jumlah'
+                },
+                {
+                    data:'tgl_pemakaian',
+                    name:'tgl_pemakaian'
+                },
+                {
+                    data:'id_offer',
+                    name:'action',
+                    searchable: false,
+                    render:function(row,type,data){
+                        var editPemakaianRoute = "{{ url('/editpemakaianobat') }}";
+                        return `
+                            <a href="${editPemakaianRoute}/${data}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                            <button data-id="${data}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                        `;
+                    },
+                },
+            ],
             // buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
             buttons:[
                 {
                     extend: 'copy',
                     text:'COPY',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'pdf',
                     text:'PDF',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'print',
                     text:'CETAK',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'csv',
                     text:'CSV',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'excel',
                     text:'EXCEL',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'colvis',
                     text:'COLUMN VISIBLE',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 }
             ]
         });
+        $('#importExcess').on('click', function(e){
+            e.preventDefault();
+            var formExcess = new FormData($('#FormExcel')[0]);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('import-excess')}}',
+                data: formExcess,
+                contentType: false,
+                processData: false,
+                enctype: 'multipart/form-data',
+                dataType: 'json',
+                success: function(response){
+                    if(response.status === 200)
+                    {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Import Excess Data Successfully',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed Import'
+                        });
+                    }
+                },
+                error: function(error){
+                    console.error(error);
+                }
+            })
+        })
     });
     
 </script>

@@ -63,4 +63,15 @@ class AlatController extends Controller
       Alat::create($validasi);
       return redirect()->route('data-alat')->with('success','Berhasil');
     }
+
+    public function editAlat(Request $request, $id)
+    {
+      $alat = Alat::find($id);
+      $alat->nama_alat = $request->nama_alat;
+      $alat->factory = $request->factory;
+      $alat->jumlah = $request->jumlah;
+      $alat->created_by = Auth()->user()->name;
+      $alat->save();
+      return response()->json(['status' => 200]);
+    }
 }

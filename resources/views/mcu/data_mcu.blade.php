@@ -9,8 +9,8 @@
     
     <h4>{{$hariindo}}</h4>
     <p>Jam Digital: <b><span id="jam" style="font-size:24"></span></b></p>
-            <h1 class="h3 mt-0 mb-0 text-gray-800">Data Penggunaan Obat</h1>
-            <p class="mb-0">Berikut adalah halaman Penggunaan</p>
+            <h1 class="h3 mt-0 mb-0 text-gray-800">Data Medical Check Up</h1>
+            <p class="mb-0">Berikut adalah halaman MCU</p>
             @if(session()->has('berhasil'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{session('berhasil')}}
@@ -118,7 +118,7 @@
                                     <th>No</th>
                                     <th>NIK</th>
                                     <th>No Rekam Medis</th>
-                                    {{-- <th>Nama Karyawan</th> --}}
+                                    <th>Nama Karyawan</th>
                                     {{-- <th>Section</th> --}}
                                     <th>Factory</th>
                                     <th>Tanggal Pemeriksaan</th>
@@ -147,7 +147,7 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>
@@ -156,8 +156,10 @@
 <script>
     $(document).ready(function() {
     var dataTable = $('#dataTable').DataTable({
-        processing: true,
         serverSide: true,
+        processing: true,
+        // responsive: true,
+        select: true,
         ajax : "{{route('data-mcu')}}",
         // URL untuk meminta data dari server
         columns: [
@@ -169,6 +171,8 @@
     },
             { data: "nik", name: "nik"},
             { data: "no_rm", name: "no_rm"},
+            { data: "nama", name: "nama"},
+            // { data: "kode_section", name: "kode_section"},
             { data: "factory", name: "factory" },
             { data: "tgl_pemeriksaan", name: "tgl_pemeriksaan" },
             { data: "status_gizi", name: "status_gizi"},
@@ -187,42 +191,66 @@
                     extend: 'copy',
                     text:'COPY',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'pdf',
                     text:'PDF',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'print',
                     text:'CETAK',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'csv',
                     text:'CSV',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'excel',
                     text:'EXCEL',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'colvis',
                     text:'COLUMN VISIBLE',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7,8,9,10,11]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 }
             ]

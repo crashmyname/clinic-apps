@@ -94,7 +94,7 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>

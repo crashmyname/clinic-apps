@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>
             @switch ($title)
                 @case ('Dashborad')
@@ -34,6 +35,9 @@
                 @case ('Excess Data')
                     Excess Data
                     @break
+                @case ('Data Outsorching')
+                    Data Outsorching
+                    @break
                 @case ('Data Peminjaman Alat')
                     Data Peminjaman Alat
                     @break
@@ -55,6 +59,9 @@
                 @case ('Report Monthly Istirahat')
                     Report Monthly Istirahat
                     @break
+                @case ('Data Pemakaian Obat')
+                    Data Pemakaian Obat
+                    @break
                 @default
                     Dashboard
                     @break
@@ -63,16 +70,29 @@
     </title>
 
     <link rel="stylesheet" href="{{asset('/template/assets/css/main/app.css')}}">
-    <link rel="stylesheet" href="{{asset('/template/assets/css/main/app-dark.css')}}">
-    <link rel="stylesheet" href="{{asset('/template/assets/extensions/@fortawesome/fontawesome-free/css/fontawesome.min.css')}}">
-    {{-- <link rel="stylesheet" href="{{asset('/datatable/jquery.dataTables.min.css')}}"> --}}
-    <link rel="stylesheet" href="{{asset('/datatable/buttons.dataTables.min.css')}}">
-    <link rel="stylesheet" href="{{asset('/template/assets/css/shared/iconly.css')}}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="{{asset('/datatable/responsive.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('template/assets/extensions/simple-datatables/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/pages/simple-datatables.css') }}">
+    <link rel="stylesheet" href="{{ asset('/template/assets/css/main/app-dark.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/extensions/filepond/filepond.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('template/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/extensions/toastify-js/src/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/pages/filepond.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/extensions/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{asset('asset/buttons.dataTables.min.css')}}">
+    <link rel="stylesheet" href="{{asset('asset/buttons.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{asset('asset/dataTables.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{asset('asset/font-awesome.min.css')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset('/img/clinic.png')}}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('/img/clinic.png')}}">
-    <script src="{{asset('jquery-3.4.1.min.js')}}"></script>
+    <script src="{{asset('asset/jquery-3.7.0.js')}}"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            header: {
+                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+    </script>
 
     <style>
         .dataTables_wrapper {
@@ -101,7 +121,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a href="index.html">
+                            <a href="{{route('dashboard')}}">
                                 <img src="{{asset('/img/ise.png')}}" alt="Logo" width="80px" srcset="">
                             </a>
                         </div>
@@ -142,453 +162,132 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
-                        @if ($title == "Dashboard")
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item {{$title == "Dashboard" ? 'active' : ''}}">
                             <a href="{{route('dashboard')}}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Dashboard</span>
                             </a>
-                        </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('dashboard')}}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if ($title == "Data Obat" || $title == "Data Alat" || $title == "Data User")       
-                        <li class="sidebar-item has-sub active">
+                        </li>     
+                        <li class="sidebar-item has-sub {{$title == 'Data Obat' || $title == 'Data Alat' || $title == 'Data User' || $title == 'Data Outsorching' ? 'active' : ''}}">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-folder-fill"></i>
                                 <span>Master Data</span>
                             </a>
-                            <ul class="submenu active">
-                            @if ($title == "Data Obat")
-                                <li class="submenu-item active">
+                            <ul class="submenu {{$title == 'Data Obat' || $title == 'Data Alat' || $title == 'Data User' || $title == 'Data Outsorching' ? 'active' : ''}}">
+                                <li class="submenu-item {{$title == 'Data Obat' ? 'active' : ''}}">
                                     <a href="{{route('data-obat')}}" class='submenu-link'>
                                         <i class="bi bi-capsule"></i>
                                             <span>Data Obat</span>
                                     </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-obat')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Data Obat</span>
-                                    </a>
-                                </li>                               
-                            @endif
-                            @if ($title == "Data Alat")    
-                                <li class="submenu-item active">
+                                </li>   
+                                <li class="submenu-item {{ $title == 'Data Alat' ? 'active' : ''}}">
                                     <a href="{{route('data-alat')}}" class='submenu-link'>
                                         <i class="bi bi-gear-wide-connected"></i>
                                             <span>Data Alat</span>
                                     </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-alat')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Data Alat</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Data Outsorching")    
-                                <li class="submenu-item active">
-                                    <a href="" class='submenu-link'>
+                                </li> 
+                                <li class="submenu-item {{$title == 'Data Outsorching' ? 'active' : ''}}">
+                                    <a href="{{route('data-os')}}" class='submenu-link'>
                                         <i class="bi bi-person-plus-fill"></i>
                                             <span>Data OS</span>
                                     </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data OS</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Data User")    
-                                <li class="submenu-item active">
+                                </li>  
+                                <li class="submenu-item {{$title == 'Data User' ? 'active' : ''}}">
                                     <a href="{{route('data-user')}}" class='submenu-link'>
                                         <i class="bi bi-person-plus-fill"></i>
                                             <span>Data User</span>
                                     </a>
                                 </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-user')}}" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data User</span>
-                                    </a>
-                                </li>
-                            @endif
                             </ul>
                         </li>
-                        @else
-                            <li class="sidebar-item has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-folder-fill"></i>
-                                <span>Master Data</span>
-                            </a>
-                            <ul class="submenu">
-                            @if($title == "Data Obat")
-                                <li class="submenu-item active">
-                                    <a href="{{route('data-obat')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Data Obat</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-obat')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Data Obat</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Data Alat")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('data-alat')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Data Alat</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-alat')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Data Alat</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Data Outsorching")    
-                                <li class="submenu-item active">
-                                    <a href="" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data OS</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data OS</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Data User")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('data-user')}}" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data User</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('data-user')}}" class='submenu-link'>
-                                        <i class="bi bi-person-plus-fill"></i>
-                                            <span>Data User</span>
-                                    </a>
-                                </li>
-                            @endif
-                            </ul>
-                        </li>
-                        @endif
-                        @if($title == "Data HW")
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item {{$title == 'Data HW' ? 'active' : ''}}">
                             <a href="{{route('data-hw')}}" class='sidebar-link'>
                                 <i class="bi bi-person-heart"></i>
                                 <span>Data Pengambilan HW</span>
                             </a>
                         </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('data-hw')}}" class='sidebar-link'>
-                                <i class="bi bi-person-heart"></i>
-                                <span>Data Pengambilan HW</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "Tambah Pemakaian" || $title == "Tambah Pemakaian Manual")
-                        <li class="sidebar-item has-sub active">
+                        <li class="sidebar-item has-sub {{$title == 'Tambah Pemakaian' || $title == 'Tambah Pemakaian Manual' ? 'active' : ''}}">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-folder-fill"></i>
                                 <span>Data Permintaan Obat</span>
                             </a>
-                            <ul class="submenu active">
-                            @if($title == "Tambah Pemakaian")
-                                <li class="submenu-item active">
+                            <ul class="submenu {{$title == 'Tambah Pemakaian' || $title == 'Tambah Pemakaian Manual' ? 'active' : ''}}">
+                                <li class="submenu-item {{$title == 'Tambah Pemakaian' ? 'active' : ''}}">
                                     <a href="{{route('form-pemakaian')}}" class='submenu-link'>
                                         <i class="bi bi-capsule"></i>
                                             <span>Tambah Permintaan</span>
                                     </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('form-pemakaian')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Tambah Permintaan</span>
-                                    </a>
-                                </li>
-                            @endif    
-                            @if($title == "Tambah Pemakaian Manual")
-                                <li class="submenu-item active">
+                                </li>   
+                                <li class="submenu-item {{$title == 'Tambah Pemakaian Manual' ? 'active' : ''}}">
                                     <a href="{{route('form-pemakaian-manual')}}" class='submenu-link'>
                                         <i class="bi bi-gear-wide-connected"></i>
                                             <span>Tambah Manual</span>
                                     </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('form-pemakaian-manual')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Tambah Manual</span>
-                                    </a>
-                                </li>
-                            @endif    
+                                </li> 
                             </ul>
                         </li>
-                        @else
-                            <li class="sidebar-item has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-folder-fill"></i>
-                                <span>Data Permintaan Obat</span>
-                            </a>
-                            <ul class="submenu">
-                            @if($title == "Tambah Pemakaian")
-                                <li class="submenu-item active">
-                                    <a href="{{route('form-pemakaian')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Tambah Permintaan</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('form-pemakaian')}}" class='submenu-link'>
-                                        <i class="bi bi-capsule"></i>
-                                            <span>Tambah Permintaan</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if($title == "Tambah Pemakaian Manual")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('form-pemakaian-manual')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Tambah Manual</span>
-                                    </a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('form-pemakaian-manual')}}" class='submenu-link'>
-                                        <i class="bi bi-gear-wide-connected"></i>
-                                            <span>Tambah Manual</span>
-                                    </a>
-                                </li>
-                            @endif    
-                            </ul>
-                        </li>
-                        @endif
-                        @if($title == "Data Pemakaian Obat")
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item {{$title == 'Data Pemakaian Obat' ? 'active' : ''}}">
                             <a href="{{route('pemakaian-obat')}}" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-medical"></i>
                                 <span>Data Permintaan Obat</span>
                             </a>
-                        </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('pemakaian-obat')}}" class='sidebar-link'>
-                                <i class="bi bi-file-earmark-medical"></i>
-                                <span>Data Permintaan Obat</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "Excess Data")    
-                        <li class="sidebar-item active">
+                        </li>   
+                        <li class="sidebar-item {{$title == 'Excess Data' ? 'active' : ''}}">
                             <a href="{{route('pemakaian-lebih')}}" class='sidebar-link'>
                             <i class="bi bi-capsule-pill"></i>
                                 <span>Excess Data</span>
                             </a>
                         </li>
-                        @else
-                            <li class="sidebar-item">
-                                <a href="{{route('pemakaian-lebih')}}" class='sidebar-link'>
-                                <i class="bi bi-capsule-pill"></i>
-                                <span>Excess Data</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "Peminjaman Alat")
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item {{$title == 'Peminjaman Alat' ? 'active' : ''}}">
                             <a href="{{route('peminjaman-alat')}}" class='sidebar-link'>
                                 <i class="bi bi-hdd-network"></i>
                                 <span>Data Peminjaman Alat</span>
                             </a>
-                        </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('peminjaman-alat')}}" class='sidebar-link'>
-                                <i class="bi bi-hdd-network"></i>
-                                <span>Data Peminjaman Alat</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "Karyawan Istirahat")    
-                            <li class="sidebar-item active">
+                        </li>    
+                            <li class="sidebar-item {{$title == 'Karyawan Istirahat' ? 'active' : ''}}">
                                 <a href="{{route('istirahat')}}" class='sidebar-link'>
                                 <i class="bi bi-hospital"></i>
                                     <span>Karyawan Istirahat</span>
                                 </a>
-                            </li>
-                        @else    
-                            <li class="sidebar-item">
-                                <a href="{{route('istirahat')}}" class='sidebar-link'>
-                                    <i class="bi bi-hospital"></i>
-                                    <span>Karyawan Istirahat</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if($title == "Data MCU")        
-                        <li class="sidebar-item active">
+                            </li>     
+                        <li class="sidebar-item {{$title == 'Data MCU' ? 'active' : ''}}">
                             <a href="{{route('data-mcu')}}" class='sidebar-link'>
                                 <i class="bi bi-files"></i>
                                 <span>Data MCU</span>
                             </a>
                         </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('data-mcu')}}" class='sidebar-link'>
-                                <i class="bi bi-files"></i>
-                                <span>Data MCU</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "RM Karyawan")
-                        <li class="sidebar-item active">
+                        <li class="sidebar-item {{$title == 'RM Karyawan' ? 'active' : ''}}">
                             <a href="{{route('data-rm')}}" class='sidebar-link'>
                             <i class="bi bi-people"></i>
                                 <span>RM Karyawan</span>
                             </a>
-                        </li>
-                        @else
-                        <li class="sidebar-item">
-                            <a href="{{route('data-rm')}}" class='sidebar-link'>
-                            <i class="bi bi-people"></i>
-                                <span>RM Karyawan</span>
-                            </a>
-                        </li>
-                        @endif
-                        @if($title == "Report Weekly Pemakaian" || $title == "Report Monthly Pemakaian" || $title == "Report Weekly Istirahat" || $title == "Report Monthly Istirahat")    
-                            <li class="sidebar-item has-sub active">
+                        </li>   
+                            <li class="sidebar-item has-sub {{$title == "Report Weekly Pemakaian" || $title == "Report Monthly Pemakaian" || $title == "Report Weekly Istirahat" || $title == "Report Monthly Istirahat" ? 'active' : ''}}">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-folder-fill"></i>
                                 <span>Report</span>
                             </a>
-                            <ul class="submenu active">
-                            @if($title == "Report Weekly Pemakaian")
-                                <li class="submenu-item active">
+                            <ul class="submenu {{$title == "Report Weekly Pemakaian" || $title == "Report Monthly Pemakaian" || $title == "Report Weekly Istirahat" || $title == "Report Monthly Istirahat" ? 'active' : ''}}">
+                                <li class="submenu-item {{$title == "Report Weekly Pemakaian" ? 'active' : ''}}">
                                     <a href="{{route('reportweeklyp')}}" class="submenu-link"
                                     >Report Weekly Pemakaian</a>
                                 </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportweeklyp')}}" class="submenu-link"
-                                    >Report Weekly Pemakaian</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Monthly Pemakaian")
-                                <li class="submenu-item active">
+                                <li class="submenu-item {{$title == "Report Monthly Pemakaian" ? 'active' : ''}}">
                                     <a href="{{route('reportmonthlyp')}}" class="submenu-link"
                                     >Report Monthly Pemakaian</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportmonthlyp')}}" class="submenu-link"
-                                    >Report Monthly Pemakaian</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Weekly Istirahat")    
-                                <li class="submenu-item active">
+                                </li>    
+                                <li class="submenu-item {{$title == "Report Weekly Istirahat" ? 'active' : ''}}">
                                     <a href="{{route('reportweeklyi')}}" class="submenu-link"
                                     >Report Weekly Istirahat</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportweeklyi')}}" class="submenu-link"
-                                    >Report Weekly Istirahat</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Monthly Istirahat")    
-                                <li class="submenu-item active">
+                                </li> 
+                                <li class="submenu-item {{$title == "Report Monthly Istirahat" ? 'active' : ''}}">
                                     <a href="{{route('reportmonthlyi')}}" class="submenu-link"
                                     >Report Monthly Istirahat</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportmonthlyi')}}" class="submenu-link"
-                                    >Report Monthly Istirahat</a>
-                                </li>
-                            @endif    
+                                </li>   
                             </ul>
                         </li>
-                        @else
-                            <li class="sidebar-item has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-folder-fill"></i>
-                                <span>Report</span>
-                            </a>
-                            <ul class="submenu">
-                            @if($title == "Report Weekly Pemakaian")
-                                <li class="submenu-item active">
-                                    <a href="{{route('reportweeklyp')}}" class="submenu-link"
-                                    >Report Weekly Pemakaian</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportweeklyp')}}" class="submenu-link"
-                                    >Report Weekly Pemakaian</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Monthly Pemakaian")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('reportmonthlyp')}}" class="submenu-link"
-                                    >Report Monthly Pemakaian</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportmonthlyp')}}" class="submenu-link"
-                                    >Report Monthly Pemakaian</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Weekly Istirahat")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('reportweeklyi')}}" class="submenu-link"
-                                    >Report Weekly Istirahat</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportweeklyi')}}" class="submenu-link"
-                                    >Report Weekly Istirahat</a>
-                                </li>
-                            @endif
-                            @if($title == "Report Monthly Istirahat")    
-                                <li class="submenu-item active">
-                                    <a href="{{route('reportmonthlyi')}}" class="submenu-link"
-                                    >Report Monthly Istirahat</a>
-                                </li>
-                            @else    
-                                <li class="submenu-item">
-                                    <a href="{{route('reportmonthlyi')}}" class="submenu-link"
-                                    >Report Monthly Istirahat</a>
-                                </li>
-                            @endif    
-                            </ul>
-                        </li>
-                        @endif
                         <li class="sidebar-item">
-                            <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout').submit(); return confirm('Apakah yakin anda ingin Logout?');" class='sidebar-link'>
+                            <a href="" id="buttonLogout" class='sidebar-link'>
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Logout</span>
                             </a>
@@ -600,51 +299,48 @@
             </div>
         </div>
     </div>
-
     @yield('container')
 
-<script src="{{asset('/template/assets/js/bootstrap.js')}}"></script>
-<script src="{{asset('/template/assets/js/app.js')}}"></script>
-<script src="{{asset('/template/assets/js/pages/horizontal-layout.js')}}"></script>
-<!-- <script src="style.js"></script> -->
+    <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('template/assets/js/app.js') }}"></script>
+    <script src="{{ asset('template/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
+    <script src="{{ asset('template/assets/js/pages/simple-datatables.js') }}"></script>
 
-<!-- Need: Apexcharts -->
-{{-- <script src="{{asset('/template/assets/extensions/apexcharts/apexcharts.min.js')}}"></script> --}}
-<script src="{{asset('/template/assets/extensions/simple-datatables/umd/simple-datatables.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-{{-- <script src="{{asset('/datatable/jquery.dataTables.min.js')}}"></script> --}}
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="{{asset('/datatable/dataTables.buttons.min.js')}}"></script>
-<script src="{{asset('/datatable/buttons.bootstrap5.min.js')}}"></script>
-<script src="{{asset('/datatable/buttons.flash.min.js')}}"></script>
-<script src="{{asset('/datatable/jszip.min.js')}}"></script>
-<script src="{{asset('/datatable/pdfmake.min.js')}}"></script>
-<script src="{{asset('/datatable/vfs_fonts.js')}}"></script>
-<script src="{{asset('/datatable/buttons.html5.min.js')}}"></script>
-<script src="{{asset('/datatable/buttons.print.min.js')}}"></script>
-<script src="{{asset('/datatable/buttons.colVis.min.js')}}"></script>
-<script src="{{asset('/datatable/dataTables.responsive.min.js')}}"></script>
-<script src="{{asset('/datatable/responsive.bootstrap5.min.js')}}"></script>
-<script>
-    $(document).ready(function() {
-        $('#postLink').click(function(e) {
-            e.preventDefault(); // Mencegah hyperlink melakukan navigasi standar
+    <script src="{{ asset('template/assets/extensions/filepond/filepond.js') }}"></script>
+    <script src="{{ asset('template/assets/extensions/toastify-js/src/toastify.js') }}"></script>
+    <script src="{{ asset('template/assets/js/pages/filepond.js') }}"></script>
+    <script src="{{ asset('template/assets/extensions/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('template/assets/js/pages/sweetalert2.js') }}"></script>
+    {{-- CDN DATATABLE --}}
+    <script src="{{asset('asset/datatable/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/dataTables.bootstrap5.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/buttons.bootstrap5.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/jszip.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/pdfmake.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/vfs_fonts.js')}}"></script>
+    <script src="{{asset('asset/datatable/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/buttons.print.min.js')}}"></script>
+    <script src="{{asset('asset/datatable/buttons.colVis.min.js')}}"></script>
+    {{-- <script src="https://cdn.datatables.net/scroller/2.3.0/js/dataTables.scroller.min.js"></script> --}}
+    <script src="{{asset('asset/datatable/dataTables.select.min.js')}}"></script>
 
-            // Data yang ingin Anda kirim dalam permintaan POST
-            var postData = {
-                _token: '{{ csrf_token() }}', // Token CSRF
-            };
 
-            $.post("{{route('logout')}}", postData, function(response) {
-                // Tanggapan dari server
-                console.log(response);
-                // Anda dapat menambahkan kode lain untuk menangani tanggapan di sini
-            });
-        });
-    });
+<script type="text/javascript">
+    document.getElementById('buttonLogout').addEventListener('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title : 'Logout',
+            text : 'Are you sure want Logout?',
+            icon : 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Logout!',
+        }).then((result)=>{
+            if(result.isConfirmed){
+                document.getElementById('logout').submit();
+            }
+        })
+    })
 </script>
 <script type="text/javascript">
         window.onload = function() { jam(); }
@@ -666,7 +362,6 @@
             return e;
         }
     </script>
-
 </body>
 
 </html>

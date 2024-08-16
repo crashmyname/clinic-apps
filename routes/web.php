@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     //Data Obat
     Route::get('/dataobat', [ObatController::class, 'dataObat'])->name('data-obat');
     Route::post('/inputobat',[ObatController::class, 'inputObat'])->name('input-obat');
+    Route::put('/editobat/{id_obat}',[ObatController::class, 'editObat'])->name('edit-obat');
+    Route::get('/hapusobat/{id_obat}', [ObatController::class, 'hapusObat'])->name('hapus-obat');
 
     //Data Stock
     Route::post('/inputstock',[ObatController::class, 'stockObat'])->name('input-stock');
@@ -54,14 +56,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dataapinama', [ApiController::class, 'DataApiNama'])->name('DataApi');
     Route::post('/dataapisect', [ApiController::class, 'DataApiSect'])->name('DataApiSection');
 
+    //Outshorcing
+    Route::get('/dataos', [UserController::class, 'dataOs'])->name('data-os');
+
     //Data HW
     Route::get('/datahw', [HwController::class, 'dataHw'])->name('data-hw');
+    Route::post('/addhw',[HwController::class, 'addHw'])->name('addhw');
+    Route::post('/updatehw/{id}', [HwController::class, 'updateHw'])->name('updatehw');
+    Route::delete('/deletehw/{id}', [HwController::class, 'deletehw'])->name('deletehw');
+    Route::post('/import-hw',[HwController::class, 'HwImport'])->name('import-hw');
 
     //Data Pemakaian Obat
     Route::get('/formaddpemakaianobat', [PemakaianController::class, 'formPemakaian'])->name('form-pemakaian');
     Route::get('/formaddpemakaianobatmanual', [PemakaianController::class, 'formPemakaianManual'])->name('form-pemakaian-manual');
     Route::get('/pemakaianobat', [PemakaianController::class, 'showdataObat'])->name('pemakaian-obat');
-    Route::get('/editpemakaianobat/{id_pemakaian}', [PemakaianController::class, 'editPemakaian'])->name('edit-pemakaian');
+    Route::post('/pemakaianobat',[PemakaianController::class, 'addPemakaian'])->name('addpemakaian');
+    Route::get('/editpemakaianobat/{id_pemakaian}', [PemakaianController::class, 'formeditPemakaian'])->name('edit-pemakaian');
     Route::get('/peminjaman', [PemakaianController::class, 'peminjamanAlat'])->name('peminjaman-alat');
     Route::get('/report-weekly-pemakaian', [PemakaianController::class, 'reportWpemakaian'])->name('reportweeklyp');
     Route::get('/report-monthly-pemakaian', [PemakaianController::class, 'reportMpemakaian'])->name('reportmonthlyp');
@@ -76,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     //Data Karyawan Istirahat
     Route::get('/rest', [RestController::class, 'showdataRest'])->name('istirahat');
     Route::post('/add-rest', [RestController::class, 'addRest'])->name('input-rest');
+    Route::post('/import-rest',[RestController::class, 'importRest'])->name('import-rest');
 
     //Data MCU
     Route::get('/mcu', [McuController::class, 'showdataMcu'])->name('data-mcu');

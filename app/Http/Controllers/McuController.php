@@ -19,16 +19,29 @@ class McuController extends Controller
     public function showdataMcu(Request $request)
     {
         $title = "Data MCU";
-        // if($request->ajax()){
-        // $api = http::get('http://10.203.68.47:90/fambook/config/api2.php');
-        // $emp = $api->json();
-        //   return DataTables::of($emp)
-        //           ->make(true);
-        // }
         if($request->ajax()){
-          $mcu = Mcu::query()
-          ->select(['no_rm','nik','factory','tgl_pemeriksaan','status_gizi','buta_warna','anamnesa','radiology_test','dokter','fitness_s','keterangan'])
-          ->get();
+          // $apiemp = Http::get('http://10.203.68.47:90/fambook/config/api.php')->json();
+          // $combine = collect($apiemp)->map(function($emp){
+          //   $mcu = Mcu::query()
+          //   ->select(['no_rm','nik','factory','tgl_pemeriksaan','status_gizi','buta_warna','anamnesa','radiology_test','dokter','fitness_s','keterangan'])->where('nik',$emp['nik'])
+          //   ->first();
+          //   return [
+          //     'nik' => optional($mcu)->nik,
+          //     'no_rm' => optional($mcu)->no_rm,
+          //     'nama' => $emp['nama'],
+          //     'kode_section' => $emp['kode_section'],
+          //     'factory' => optional($mcu)->factory,
+          //     'tgl_pemeriksaan' => optional($mcu)->tgl_pemeriksaan,
+          //     'status_gizi' => optional($mcu)->status_gizi,
+          //     'buta_warna' => optional($mcu)->buta_warna,
+          //     'anamnesa' => optional($mcu)->anamnesa,
+          //     'radiology_test' => optional($mcu)->radiology_test,
+          //     'dokter' => optional($mcu)->dokter,
+          //     'fitness_s' => optional($mcu)->fitness_s,
+          //     'keterangan' => optional($mcu)->keterangan,
+          //   ];
+          // });
+          $mcu = Mcu::limit(10);
           return DataTables::of($mcu)
           ->make(true);
         }

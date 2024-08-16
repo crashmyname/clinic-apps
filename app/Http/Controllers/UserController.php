@@ -8,6 +8,14 @@ use App\Models\Pemakaian;
 use App\Models\Mcu;
 use App\Models\Alat;
 use App\Models\Rest;
+use App\Models\Os;
+use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Html\Editor\Editor;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Services\DataTable;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -144,5 +152,47 @@ class UserController extends Controller
         $users->save();
         $request->session()->flash("update","Data ".$request->name." berhasil diubah");
         return redirect()->route('data-user');
+    }
+
+    public function dataOs(Request $request)
+    {
+        $title = "Data Outsorching";
+        // $user = User::all();
+        $hari = date('l');
+        switch($hari){
+            case 'Sunday':
+                $day = 'Minggu';
+                break;
+              case 'Monday':
+                $day = 'Senin';
+                break;
+              case 'Tuesday':
+                $day = 'Selasa';
+                break;
+              case 'Wednesday':
+                $day = 'Rabu';
+                break;
+              case 'Thursday':
+                $day = 'Kamis';
+                break;
+              case 'Friday':
+                $day = 'Jumat';
+                break;
+              case 'Saturday':
+                $day = 'Sabtu';
+                break;
+              default:
+                'hari tidak valid';
+        }
+        date_default_timezone_set("Asia/jakarta");
+        $hariindo = $day.", ". date('d M Y');
+        if($request->ajax()){
+            $os = Os::query()
+            ->select('id_os','nik','nama','kode_section')
+            ->get();
+            return DataTables::of($os)
+            ->make(true);            
+        }
+        return view('user/data_os',compact('title','hariindo'));
     }
 }

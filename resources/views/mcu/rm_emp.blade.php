@@ -74,7 +74,7 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>
@@ -85,6 +85,8 @@
         $('#datatables').DataTable({
             processing: true,
             serverside: true,
+            responsive: true,
+            select: true,
             ajax: '{{ route('data-rm') }}',
             columns:[
                 {
@@ -121,42 +123,66 @@
                     extend: 'copy',
                     text:'COPY',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'pdf',
                     text:'PDF',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'print',
                     text:'CETAK',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'csv',
                     text:'CSV',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'excel',
                     text:'EXCEL',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 },
                 {
                     extend: 'colvis',
                     text:'COLUMN VISIBLE',
                     exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                        columns:':visible',
+                    columnDefs:[{
+                        targets: -1,
+                        visible: false
+                    }]
                     }
                 }
             ]

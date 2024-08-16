@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Obat;
 use App\Models\Stock;
+use App\Models\HStock;
 
 class ObatController extends Controller
 {
@@ -39,9 +40,10 @@ class ObatController extends Controller
         }
         date_default_timezone_set("Asia/jakarta");
         $hariindo = $day.", ". date('d M Y');
-        $stock = Obat::join('stock','stock.id_obat','=','obat.id_obat')->orderBy('nama_obat','asc')->orderBy('factory','asc')->get();
-        $obat = Obat::orderBy('nama_obat','asc')->orderBy('factory','asc')->get();
-        return view('obat/data_obat',compact('hariindo','title','obat','stock'))->with('no');
+        // $stock = Obat::join('stock','stock.id_obat','=','obat.id_obat')->orderBy('nama_obat','asc')->orderBy('factory','asc')->get();
+        // $obat = Obat::orderBy('nama_obat','asc')->orderBy('factory','asc')->get();
+        $obat = Obat::with('stock')->orderBy('nama_obat','asc')->orderBy('factory','asc')->get();
+        return view('obat/data_obat',compact('hariindo','title','obat'))->with('no');
     }
 
     public function inputObat(Request $request)
@@ -82,20 +84,22 @@ class ObatController extends Controller
         'dosis' => '',
         'jenis' => 'required',
         'factory' => 'required|max:2',
-        'foto' => 'image|file|max:7048',
+        // 'foto' => 'image|file|max:7048',
       ]);
+
       if($request->hasFile('foto')){
-        $obat->foto = $request->file('foto')->store('public/obat');
+        $OrName = $request->foto->getClientOriginalName();
+        $obat->foto = $request->file('foto')->storeAs('public/obat',$OrName);
+        $obat->foto = $OrName;
       }
-      Obat::where('id_obat',$id)->update([
-        'nama_obat' => $request->nama_obat,
-        'keluhan' => $request->keluhan,
-        'dosis' => $request->dosis,
-        'jenis' => $request->jenis,
-        'factory' => $request->factory,
-        'foto' => $request->foto,
-        'updated_by' => auth()->user()->name,
-      ]);
+
+      $obat->nama_obat = $request->nama_obat;
+      $obat->keluhan = $request->keluhan;
+      $obat->dosis = $request->dosis;
+      $obat->jenis = $request->jenis;
+      $obat->factory = $request->factory;
+      $obat->updated_by = auth()->user()->name;
+      $obat->save();
       $request->session()->flash('update','Berhasil merubah data');
       return redirect()->route('data-obat');
     }
@@ -126,7 +130,35 @@ class ObatController extends Controller
         'tgl_kadaluwarsa' => $request->tgl_kadaluwarsa,
         'created_by' => auth()->user()->name,
       ]);
+      if($stock){
+        $h_stock = Hstock::create([
+          'id_obat' => $stock->id_obat,
+          'h_stock' => $request->stock,
+          'factory' => $request->factory,
+          'tgl_in_obat' => $request->tgl_in_obat,
+          'tgl_kadaluwarsa' => $request->tgl_kadaluwarsa,
+          'created_by' => auth()->user()->name,
+        ]);
+      }
       $request->session()->flash('berhasil','Berhasil menambahkan Data Stock');
       return redirect()->route('data-obat');
+    }
+
+    public function hapusObat($id_obat)
+    {
+      $obat = Obat::find($id_obat);
+      if(!$obat){
+        return redirect()->route('data-obat')->with('delete','Data Tidak ditemukan');
+      }
+      if($obat->stock){
+        $obat->stock->delete();
+      }
+      $obat->delete();
+      return redirect()->route('data-obat')->with('delete','Data Berhasil dihapus');
+    }
+
+    public function CategoryObat(Request $request)
+    {
+
     }
 }

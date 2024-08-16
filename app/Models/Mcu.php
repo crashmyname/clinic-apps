@@ -10,4 +10,5 @@ class Mcu extends Model
     use HasFactory;
     public $table = 'mcu';
     protected $guarded = ['id_mcu'];
+    protected $primaryKey = 'id_mcu';
 }

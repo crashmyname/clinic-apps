@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Excess extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
     public $table = "offer";
     protected $guarded = ['id_offer'];
+    protected $primaryKey = 'id_offer';
 }

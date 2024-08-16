@@ -1,333 +1,497 @@
 @extends('nav/header')
 @section('container')
-<div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
-    
-    <h4>{{$hariindo}}</h4>
-    <p>Jam Digital: <b><span id="jam" style="font-size:24"></span></b></p>
-            <h1 class="h3 mt-0 mb-0 text-gray-800">Data Permintaan Obat</h1>
-            <p class="mb-0">Berikut adalah halaman Permintaan</p>
-            @if(session()->has('berhasil'))
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+
+        <h4>{{ $hariindo }}</h4>
+        <p>Jam Digital: <b><span id="jam" style="font-size:24"></span></b></p>
+        <h1 class="h3 mt-0 mb-0 text-gray-800">Data Permintaan Obat</h1>
+        <p class="mb-0">Berikut adalah halaman Permintaan</p>
+        @if (session()->has('berhasil'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{session('berhasil')}}
+                {{ session('berhasil') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            @endif
-            @if (session()->has('update'))  
+        @endif
+        @if (session()->has('update'))
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{session('update')}}
+                {{ session('update') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            @endif
-            @if (session()->has('delete'))
+        @endif
+        @if (session()->has('delete'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{session('delete')}}
+                {{ session('delete') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            @endif
-            <!-- DataTales Example -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Table Cover Page</h6>
-                    <button type="button" class="btn btn-outline-success block" data-bs-toggle="modal"
-                        data-bs-target="#border-less">
-                        Tambah Data
-                    </button>
-                    <!-- BorderLess Modal Modal -->
-                    <div class="modal fade text-left modal-lg centered" id="border-less" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Input Data Pemakaian</h5>
-                                    <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
-                                        aria-label="Close">
-                                        <i data-feather="x"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row match-height">
-                                        <div class="col-md-12 col-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Form Input</h4>
-                                                </div>
-                                                <div class="card-content">
-                                                    <div class="card-body">
-                                                        <form class="form form-horizontal" method="post"
-                                                            enctype="multipart/form-data">
-                                                            <div class="form-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <label>NIK</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <select name="emp" id="emp"
-                                                                            class="form-control" required>
-                                                                            <option value=""> - </option>
-                                                                            @foreach ($result as $data)
-                                                                            <option value="{{$data['nik']}}"> {{$data['nik']}} </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Nama Karyawan</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <select class="form-control" name="nama" id="nama">
+        @endif
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Table Cover Page</h6>
+                <button type="button" class="btn btn-outline-success block" data-bs-toggle="modal"
+                    data-bs-target="#border-less">
+                    Tambah Data
+                </button>
+                <!-- BorderLess Modal Modal -->
+                <div class="modal fade text-left modal-lg centered" id="border-less" tabindex="-1" role="dialog"
+                    aria-labelledby="myModalLabel1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Input Data Pemakaian</h5>
+                                <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i data-feather="x"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row match-height">
+                                    <div class="col-md-12 col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4 class="card-title">Form Input</h4>
+                                            </div>
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <form action="" class="form form-horizontal" id="formpemakaian" method="post"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="form-body">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <label>NIK</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input list="datalist" id="emp" name="emp"
+                                                                        class="form-control">
+                                                                    <datalist id="datalist">
+                                                                        <option value=""> - </option>
+                                                                        @foreach ($result as $data)
+                                                                            <option value="{{ $data['nik'] }}">
+                                                                                {{ $data['nik'] . ' ' . $data['nama'] . ' ' . $data['kode_section'] }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </datalist>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Nama Karyawan</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <select class="form-control" name="nama"
+                                                                        id="nama">
 
                                                                     </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Section</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <select class="form-control" name="section" id="section">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Section</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <select class="form-control" name="section"
+                                                                        id="section">
 
                                                                     </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Keluhan</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <input type="text" id="first-name"
-                                                                            class="form-control" name="keluhan"
-                                                                            placeholder="Masukan Keluhan sakit" style="text-transform:uppercase;">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Jenis Obat</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <select type="text" name="jns_obat"
-                                                                            class="form-control" required>
-                                                                            <option value=""> - </option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Jumlah</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <input type="number" id="first-name"
-                                                                            class="form-control" name="jumlah"
-                                                                            placeholder="Masukan Jumlah Obat">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Tanggal Pemakaian</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                        <input type="date" id="first-name"
-                                                                            class="form-control" name="tgl_pemakaian"
-                                                                            >
-                                                                    </div>
-                                                                    <div class="col-sm-12 d-flex justify-content-end">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary me-1 mb-1"
-                                                                            name="simpan"
-                                                                            onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
-                                                                        <button type="reset"
-                                                                            class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Keluhan</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="text" id="keluhan"
+                                                                        class="form-control" name="keluhan"
+                                                                        placeholder="Masukan Keluhan sakit"
+                                                                        style="text-transform:uppercase;">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Jenis Obat</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <select type="text" name="jns_obat" id="jns_obat"
+                                                                        class="form-control" required>
+                                                                        <option value=""> - </option>
+                                                                        @foreach ($dataobat as $item)
+                                                                            <option value="{{ $item->id_obat }}">
+                                                                                {{ $item->nama_obat }} FACT
+                                                                                {{ $item->factory }} </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Jumlah</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="number" id="jumlah"
+                                                                        class="form-control" name="jumlah"
+                                                                        placeholder="Masukan Jumlah Obat">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Tanggal Pemakaian</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="date" id="tgl_pemakaian"
+                                                                        class="form-control" name="tgl_pemakaian">
+                                                                </div>
+                                                                <div class="col-sm-12 d-flex justify-content-end">
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary me-1 mb-1" name="simpan" id="simpanp"
+                                                                        onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                    <button type="reset"
+                                                                        class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                                                 </div>
                                                             </div>
-                                                        </form>
+                                                        </div>
+                                                    </form>
 
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
-                                                <i class="bx bx-x d-block d-sm-none"></i>
-                                                <span class="d-none d-sm-block">Close</span>
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Close</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary block" data-bs-toggle="modal"
-                        data-bs-target="#border-less2">
-                        Tambah Data Manual
-                    </button>
-                    <!-- BorderLess Modal Modal -->
-                    <div class="modal fade text-left modal-lg centered" id="border-less2" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Input Data Pemakaian</h5>
-                                    <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
-                                        aria-label="Close">
-                                        <i data-feather="x"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row match-height">
-                                        <div class="col-md-12 col-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Form Input</h4>
-                                                </div>
-                                                <div class="card-content">
-                                                    <div class="card-body">
-                                                        <form class="form form-horizontal" method="post"
-                                                            enctype="multipart/form-data">
-                                                            <div class="form-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <label>NIK</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                        <input type="text" id="first-name"
-                                                                            class="form-control" name="emp"
-                                                                            placeholder="Masukan NIK">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Nama</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                        <input type="text" id="first-name"
-                                                                            class="form-control" name="nama"
-                                                                            placeholder="Masukan Nama" style="text-transform:uppercase;">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Section</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                        <input type="text" id="first-name"
-                                                                            class="form-control" name="section"
-                                                                            placeholder="Masukan Nama Section" style="text-transform:uppercase;">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Keluhan</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <input type="text" id="first-name"
-                                                                            class="form-control" name="keluhan"
-                                                                            placeholder="Masukan Keluhan sakit" style="text-transform:uppercase;">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Jenis Obat</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <select type="text" name="jns_obat"
-                                                                            class="form-control" required>
-                                                                            <option value=""> - </option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Jumlah</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                    <input type="number" id="first-name"
-                                                                            class="form-control" name="jumlah"
-                                                                            placeholder="Masukan Jumlah Obat">
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <label>Tanggal Pemakaian</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
-                                                                        <input type="date" id="first-name"
-                                                                            class="form-control" name="tgl_pemakaian"
-                                                                            >
-                                                                    </div>
-                                                                    <div class="col-sm-12 d-flex justify-content-end">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary me-1 mb-1"
-                                                                            name="simpan"
-                                                                            onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
-                                                                        <button type="reset"
-                                                                            class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary block" data-bs-toggle="modal"
+                    data-bs-target="#border-less2">
+                    Tambah Data Manual
+                </button>
+                <!-- BorderLess Modal Modal -->
+                <div class="modal fade text-left modal-lg centered" id="border-less2" tabindex="-1" role="dialog"
+                    aria-labelledby="myModalLabel1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Input Data Pemakaian</h5>
+                                <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i data-feather="x"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row match-height">
+                                    <div class="col-md-12 col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4 class="card-title">Form Input</h4>
+                                            </div>
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <form class="form form-horizontal" id="formpemakaianm" method="post"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="form-body">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <label>NIK</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="text" id="empm"
+                                                                        class="form-control" name="emp"
+                                                                        placeholder="Masukan NIK">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Nama</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="text" id="namam"
+                                                                        class="form-control" name="nama"
+                                                                        placeholder="Masukan Nama"
+                                                                        style="text-transform:uppercase;">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Section</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="text" id="sectionm"
+                                                                        class="form-control" name="section"
+                                                                        placeholder="Masukan Nama Section"
+                                                                        style="text-transform:uppercase;">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Keluhan</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="text" id="keluhanm"
+                                                                        class="form-control" name="keluhan"
+                                                                        placeholder="Masukan Keluhan sakit"
+                                                                        style="text-transform:uppercase;">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Jenis Obat</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <select type="text" name="jns_obat" id="jns_obatm"
+                                                                        class="form-control" required>
+                                                                        <option value=""> - </option>
+                                                                        @foreach ($dataobat as $item)
+                                                                            <option value="{{ $item->id_obat }}">
+                                                                                {{ $item->nama_obat }} FACT
+                                                                                {{ $item->factory }} </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Jumlah</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="number" id="jumlahm"
+                                                                        class="form-control" name="jumlah"
+                                                                        placeholder="Masukan Jumlah Obat">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <label>Tanggal Pemakaian</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
+                                                                    <input type="date" id="tgl_pemakaianm"
+                                                                        class="form-control" name="tgl_pemakaian">
+                                                                </div>
+                                                                <div class="col-sm-12 d-flex justify-content-end">
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary me-1 mb-1" name="simpan" id="simpanpm"
+                                                                        onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                    <button type="reset"
+                                                                        class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                                                 </div>
                                                             </div>
-                                                        </form>
+                                                        </div>
+                                                    </form>
 
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
-                                                <i class="bx bx-x d-block d-sm-none"></i>
-                                                <span class="d-none d-sm-block">Close</span>
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Close</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-success block" data-bs-toggle="modal"
-                        data-bs-target="#border-less3">
-                        Tambah Data Excel
-                    </button>
-                    <!-- BorderLess Modal Modal -->
-                    <div class="modal fade text-left modal-lg centered" id="border-less3" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Input Data Dengan Excel</h5>
-                                    <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
-                                        aria-label="Close">
-                                        <i data-feather="x"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row match-height">
-                                        <div class="col-md-12 col-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Form Input</h4>
-                                                </div>
-                                                <div class="card-content">
-                                                    <div class="card-body">
-                                                        <form class="form form-horizontal" action="{{route('import-excel')}}" method="post"
-                                                            enctype="multipart/form-data">
-                                                            @csrf
-                                                            <div class="form-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <label>FILE EXCEL</label>
-                                                                    </div>
-                                                                    <div class="col-md-8 form-group">
+                </div>
+                <button type="button" class="btn btn-outline-success block" data-bs-toggle="modal"
+                    data-bs-target="#border-less3">
+                    Tambah Data Excel
+                </button>
+                <!-- BorderLess Modal Modal -->
+                <div class="modal fade text-left modal-lg centered" id="border-less3" tabindex="-1" role="dialog"
+                    aria-labelledby="myModalLabel1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Input Data Dengan Excel</h5>
+                                <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i data-feather="x"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row match-height">
+                                    <div class="col-md-12 col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4 class="card-title">Form Input</h4>
+                                            </div>
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <form class="form form-horizontal"
+                                                        action="{{ route('import-excel') }}" method="post"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="form-body">
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <label>FILE EXCEL</label>
+                                                                </div>
+                                                                <div class="col-md-8 form-group">
                                                                     <input type="file" id="first-name"
-                                                                            class="form-control" name="file_excel"
-                                                                            placeholder="Masukan Data Alat">
-                                                                    </div>
-                                                                    <div class="col-sm-12 d-flex justify-content-end">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary me-1 mb-1"
-                                                                            name="excel"
-                                                                            onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
-                                                                        <button type="reset"
-                                                                            class="btn btn-light-secondary me-1 mb-1">Reset</button>
-                                                                    </div>
+                                                                        class="form-control" name="file_excel"
+                                                                        placeholder="Masukan Data Alat">
+                                                                </div>
+                                                                <div class="col-sm-12 d-flex justify-content-end">
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary me-1 mb-1" name="excel"
+                                                                        onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                    <button type="reset"
+                                                                        class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                                                 </div>
                                                             </div>
-                                                        </form>
+                                                        </div>
+                                                    </form>
 
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
-                                                <i class="bx bx-x d-block d-sm-none"></i>
-                                                <span class="d-none d-sm-block">Close</span>
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Close</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <button id="showModalButton" class="btn btn-outline-info block">Info</button>
+                <div class="modal fade" id="karyawanModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Informasi Karyawan</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Tempatkan informasi karyawan yang dipilih di sini -->
+                                <div id="selectedKaryawanInfo"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalEditPemakaian" id="modalupdatepemakaian" title="Ubah Data"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                </svg> Update Pemakaian</button>
+            <!-- BorderLess Modal Modal -->
+            <div class="modal fade text-left modal-lg centered" id="modalEditPemakaian" tabindex="-1" role="dialog"
+                aria-labelledby="myModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update Data Pemakaian</h5>
+                            <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
+                                aria-label="Close">
+                                <i data-feather="x"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row match-height">
+                                <div class="col-md-12 col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Form Update Pemakaian</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <form class="form form-horizontal" id="formuppemakaian" action=""
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="form-body">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <label>NIK</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="text" id="empm"
+                                                                    class="form-control" name="emp"
+                                                                    placeholder="Masukan NIK">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Nama</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="text" id="namam"
+                                                                    class="form-control" name="nama"
+                                                                    placeholder="Masukan Nama"
+                                                                    style="text-transform:uppercase;">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Section</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="text" id="sectionm"
+                                                                    class="form-control" name="section"
+                                                                    placeholder="Masukan Nama Section"
+                                                                    style="text-transform:uppercase;">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Keluhan</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="text" id="keluhanm"
+                                                                    class="form-control" name="keluhan"
+                                                                    placeholder="Masukan Keluhan sakit"
+                                                                    style="text-transform:uppercase;">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Jenis Obat</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <select type="text" name="jns_obat" id="jns_obatm"
+                                                                    class="form-control" required>
+                                                                    <option value=""> - </option>
+                                                                    @foreach ($dataobat as $item)
+                                                                        <option value="{{ $item->id_obat }}">
+                                                                            {{ $item->nama_obat }} FACT
+                                                                            {{ $item->factory }} </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Jumlah</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="number" id="jumlahm"
+                                                                    class="form-control" name="jumlah"
+                                                                    placeholder="Masukan Jumlah Obat">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label>Tanggal Pemakaian</label>
+                                                            </div>
+                                                            <div class="col-md-8 form-group">
+                                                                <input type="date" id="tgl_pemakaianm"
+                                                                    class="form-control" name="tgl_pemakaian">
+                                                            </div>
+                                                            <div class="col-sm-12 d-flex justify-content-end">
+                                                                <button type="submit"
+                                                                    class="btn btn-primary me-1 mb-1" name="simpan" id="simpanpm"
+                                                                    onclick="return confirm('Apakah data yang anda masukkan sudah benar?')">Submit</button>
+                                                                <button type="reset"
+                                                                    class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
+                                        <i class="bx bx-x d-block d-sm-none"></i>
+                                        <span class="d-none d-sm-block">Close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <button type="submit" id="deletepemakaian" title="delete pemakaian" class="btn icon btn-outline-danger"><i
+                class="bi bi-trash"></i> Hapus</button>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="datatables" width="100%" cellspacing="0">
@@ -341,7 +505,6 @@
                                     <th>Jenis Obat</th>
                                     <th>Jumlah</th>
                                     <th>Tanggal Permintaan</th>
-                                    <th width="">ACTION</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -349,7 +512,7 @@
                         </table>
                     </div>
                 </div>
-            </div>    
+            </div>
             <footer class="">
                 <div class="container-fluid fixed-bottom">
                     <div class="footer clearfix mb-0 text-muted">
@@ -357,129 +520,376 @@
                             <p>Copyright &copy; 2023-2024</p>
                         </div>
                         <div class="float-end">
-                            <p><a target="_blank" href="http://10.203.68.7:90/iseportal/">PT.Indonesia Stanley Electric</a>. Clinic System</p>
+                            <p><a target="_blank" href="http://10.203.68.47:90/iseportal/">PT.Indonesia Stanley
+                                    Electric</a>. Clinic System</p>
                         </div>
                     </div>
                 </div>
             </footer>
-</div>
-{{-- @push('scripts') --}}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#datatables').DataTable({
-            processing: true,
-            serverside: true,
-            responsive: true,
-            ajax: '{{ route('pemakaian-obat') }}',
-            columns:[
-                {
-                    data: 'id_pemakaian',
-                    name: 'id_pemakaian',
-                    render:function(data, type, row, meta){
-                        return meta.row + meta.settings._iDisplayStart + 1;
+        </div>
+        {{-- @push('scripts') --}}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var dataTable = $('#datatables').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    select: true,
+                    ajax: '{{ route('pemakaian-obat') }}',
+                    columns: [{
+                            data: 'id_pemakaian',
+                            name: 'id_pemakaian',
+                            render: function(data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            },
+                        },
+                        {
+                            data: 'nik',
+                            name: 'nik'
+                        },
+                        {
+                            data: 'nama',
+                            name: 'nama'
+                        },
+                        {
+                            data: 'kode_section',
+                            name: 'kode_section'
+                        },
+                        {
+                            data: 'keluhan',
+                            name: 'keluhan'
+                        },
+                        {
+                            data: 'nama_obat',
+                            name: 'obat.nama_obat',
+                            searchable: true
+                        },
+                        {
+                            data: 'jumlah',
+                            name: 'jumlah'
+                        },
+                        {
+                            data: 'tgl_pemakaian',
+                            name: 'tgl_pemakaian'
+                        },
+                        // {data: 'action', name: 'action'},
+                        // {
+                        //     data: 'id_pemakaian',
+                        //     name: 'id_pemakaian',
+                        //     // orderable: false,
+                        //     render: function(data, type, row) {
+                        //         var editPemakaianRoute = "{{ url('/editpemakaianobat') }}";
+                        //         return `
+                        //     <a href="${editPemakaianRoute}/${data}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                        //     <button data-id="${data}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                        // `;
+                        //     },
+                        // },
+                    ],
+                    lengthMenu: [10, 25, 50, 100, {{ $pemakaian }}],
+                    dom: 'Blfrtip',
+                    // select: true,
+                    buttons: [{
+                            extend: 'copy',
+                            text: 'COPY',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: 'PDF',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            text: 'CETAK',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            text: 'CSV',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: 'EXCEL',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        },
+                        {
+                            extend: 'colvis',
+                            text: 'COLUMN VISIBLE',
+                            exportOptions: {
+                                columns: ':visible',
+                                columnDefs: [{
+                                    targets: -1,
+                                    visible: false
+                                }]
+                            }
+                        }
+                    ]
+                });
+                $('#simpanp').on('click', function(e){
+                    e.preventDefault();
+                    var url = "{{route('addpemakaian')}}";
+                    var formData = new FormData($('#formpemakaian')[0]);
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        processData: false, // Jangan memproses data
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: formData,
+                        dataType: 'json',
+                        success: function(response) {
+                        console.log(response);
+                        if (response.status === 200) {
+                            Swal.fire({
+                                title: 'Success',
+                                icon: 'success',
+                                text: 'Data berhasil ditambah',
+                                timerProgressBar: true,
+                                timer: 1500,
+                            }).then(function(){
+                                $('#formaddresin')[0].reset();
+                                reloadData();
+                            });
+                            $('#ics').focus();
+                        } else if(response.status === 202)
+                        {
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Karyawan sudah mengambil PAINKILLA lebih dari 2',
+                            });
+                        } else if(response.status === 203){
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Karyawan mengambil PAINKILLA lebih dari 1',
+                            });
+                        } else if(response.status === 204){
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Stock Obat sudah habis',
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Gagal membuat data | Data yang diinput melebihi stock',
+                            })
+                        }
                     },
-                },
-                {data: 'nik', name: 'nik'},
-                {data: 'nama', name: 'nama'},
-                {data: 'kode_section', name: 'section'},
-                {data: 'keluhan', name: 'keluhan'},
-                {data: 'nama_obat', name: 'nama_obat'},
-                {data: 'jumlah', name: 'jumlah'},
-                {data: 'tgl_pemakaian', name: 'tgl_pemakaian'},
-                // {data: 'action', name: 'action'},
-                {
-                    data: 'id_pemakaian',
-                    name: 'action',
-                    // orderable: false,
-                    render: function(data, type, row) {
-                        var editPemakaianRoute = "{{ url('/editpemakaianobat') }}";
-                        return `
-                            <a href="${editPemakaianRoute}/${data}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
-                            <button data-id="${data}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
-                        `;
+                    error: function(error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Error dalam melakukan fungsi',
+                        })
+                    }
+                    })
+                })
+                $('#simpanpm').on('click', function(e){
+                    e.preventDefault();
+                    var url = "{{route('addpemakaian')}}";
+                    var formData = new FormData($('#formpemakaianm')[0]);
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        processData: false, // Jangan memproses data
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: formData,
+                        dataType: 'json',
+                        success: function(response) {
+                        console.log(response);
+                        if (response.status === 200) {
+                            Swal.fire({
+                                title: 'Success',
+                                icon: 'success',
+                                text: 'Data berhasil ditambah',
+                                timerProgressBar: true,
+                                timer: 1500,
+                            }).then(function(){
+                                $('#formaddresin')[0].reset();
+                                reloadData();
+                            });
+                            $('#ics').focus();
+                        } else if(response.status === 202)
+                        {
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Karyawan sudah mengambil PAINKILLA lebih dari 2',
+                            });
+                        } else if(response.status === 203){
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Karyawan mengambil PAINKILLA lebih dari 1',
+                            });
+                        } else if(response.status === 204){
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Stock Obat sudah habis',
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                title: 'Error',
+                                icon: 'error',
+                                text: 'Gagal membuat data | Data yang diinput melebihi stock',
+                            })
+                        }
                     },
-                },
-            ],
-            lengthMenu: [10, 25, 50, 100, {{$pemakaian}}],
-            dom: 'Blfrtip',
-            // select: true,
-            buttons:[
-                {
-                    extend: 'copy',
-                    text:'COPY',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
+                    error: function(error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Error dalam melakukan fungsi',
+                        })
                     }
-                },
-                {
-                    extend: 'pdf',
-                    text:'PDF',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
-                    }
-                },
-                {
-                    extend: 'print',
-                    text:'CETAK',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
-                    }
-                },
-                {
-                    extend: 'csv',
-                    text:'CSV',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
-                    }
-                },
-                {
-                    extend: 'excel',
-                    text:'EXCEL',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
-                    }
-                },
-                {
-                    extend: 'colvis',
-                    text:'COLUMN VISIBLE',
-                    exportOptions:{
-                        columns:[0,1,2,3,4,5,6,7]
-                    }
-                }
-            ]
-        });
-    });
-     $("#emp").change(function(){
-            // variabel dari nilai combo box kendaraan
-            var emp = $("#emp").val();
+                    })
+                })
+                $('#showModalButton').on('click', function() {
+                    var selectedData = dataTable.rows({
+                        selected: true
+                    }).data();
+                    var modalContent = $('#selectedKaryawanInfo');
 
-            // Menggunakan ajax untuk mengirim dan dan menerima data dari server
-            $.ajax({
-                type: "POST",
-                dataType: "html",
-                url: "ambil_data.php",
-                data: "emp="+emp,
-                success: function(data){
-                   $("#nama").html(data);
-                }
+                    modalContent.empty(); // Kosongkan konten modal sebelum menambahkan informasi baru
+
+                    if (selectedData.length > 0) {
+                        // Jika ada data yang dipilih, tampilkan informasi dalam modal
+                        // var info = '<ul>';
+                        // selectedData.each(function (data) {
+                        //     info += '<li>' + data.nik + ' - ' + data.nama + ' - ' + data.kode_section + ' - ' + data.nama_obat + ' - ' + data.jumlah + '</li>';
+                        // });
+                        // info += '</ul>';
+                        var info = '<table>';
+                        selectedData.each(function(data) {
+                            const createdAt = new Date(data
+                            .created_at); // Mengonversi string ke objek Date
+                            const formattedCreatedAt = createdAt.toLocaleString('en-US', {
+                                timeZone: 'Asia/Jakarta',
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                            });
+                            info += '<tr>' + '<td width="35%">' + 'NIK' + '</td>' + '<td width="10%">' +
+                                ':' + '</td>' + '<td class="form-control">' + data.nik + '</td>' +
+                                '</tr>' + '<tr>' + '<td>' + 'Nama' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.nama + '</td>' + '</tr>' + '<tr>' +
+                                '<td>' + 'Section' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.kode_section + '</td>' + '</tr>' +
+                                '<tr>' + '<td>' + 'Nama Obat' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.nama_obat + '</td>' + '</tr>' +
+                                '<tr>' + '<td>' + 'Jumlah' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.jumlah + '</td>' + '</tr>' + '<tr>' +
+                                '<td>' + 'Tanggal' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.tgl_pemakaian + '</td>' + '</tr>' +
+                                '<tr>' + '<td>' + 'Created' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.created_by + '</td>' + '</tr>' +
+                                '<tr>' + '<td>' + 'Updated' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + data.updated_by + '</td>' + '</tr>' +
+                                '<tr>' + '<td>' + 'Created at' + '</td>' + '<td>' + ':' + '</td>' +
+                                '<td class="form-control">' + formattedCreatedAt + '</td>' + '</tr>';
+                        });
+                        info += '</table>';
+                        modalContent.html(info);
+                    } else {
+                        // Jika tidak ada data yang dipilih, tampilkan pesan kosong
+                        modalContent.html('Tidak ada data yang dipilih.');
+                    }
+
+                    $('#karyawanModal').modal('show'); // Tampilkan modal
+                });
             });
-        });
 
-        $("#emp").change(function(){
-            // variabel dari nilai combo box merk
-            var sect = $("#emp").val();
-
-            // Menggunakan ajax untuk mengirim dan dan menerima data dari server
-            $.ajax({
-                type: "POST",
-                dataType: "html",
-                url: "ambil_sect.php",
-                data: "emp="+sect,
-                success: function(data){
-                    $("#section").html(data);
-                }
+            $("#emp").change(function() {
+                var emp = $("#emp").val();
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Menggunakan ajax untuk mengirim dan dan menerima data dari server
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ route('DataApi') }}",
+                    data: {
+                        _token: csrfToken,
+                        emp: emp,
+                    },
+                    success: function(data) {
+                        var options = '';
+                        data.forEach(function(m) {
+                            options += "<option value='" + m.nama + "'>" + m.nama + "</option>";
+                        });
+                        $("#nama").html(options);
+                    }
+                });
             });
-        });
-</script>
-    
-@endsection
+
+            $("#emp").change(function() {
+                var sect = $("#emp").val();
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // Menggunakan ajax untuk mengirim dan dan menerima data dari server
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ route('DataApiSection') }}",
+                    data: {
+                        _token: csrfToken,
+                        emp: sect,
+                    },
+                    success: function(data) {
+                        var options = '';
+                        data.forEach(function(m) {
+                            options += "<option value='" + m.kode_section + "'>" + m.kode_section +
+                                "</option>";
+                        });
+                        $("#section").html(options);
+                    }
+                });
+            });
+        </script>
+    @endsection
